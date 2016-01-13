@@ -1,2 +1,2 @@
-# Voting App
+# Book Club
 

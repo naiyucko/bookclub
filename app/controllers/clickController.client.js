@@ -6,8 +6,9 @@
    var clickNbr = document.querySelector('#click-nbr');
    var namesection = document.querySelector('#display-name');
    var pollsection = document.querySelector('#newpoll');
-   var apiUrl = 'https://votingapp-naiyucko.c9users.io/api/clicks';
-   var apiUrlPolls = 'https://votingapp-naiyucko.c9users.io/api/polls';
+   var apiUrl = 'https://books-naiyucko.c9users.io/api/clicks';
+   var apiUrlPolls = 'https://books-naiyucko.c9users.io/api/polls';
+   var apiUrlGoogle = 'https://www.googleapis.com/books/v1/volumes?q=search+terms&key=AIzaSyDGro4GBGWx8sbhp87ZJh1ZfO27VmGLTqE';
    
    function ready (fn) {
       if (typeof fn !== 'function') {

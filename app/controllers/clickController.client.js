@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-   var addButton = document.querySelector('.btn-add');
-   var deleteButton = document.querySelector('.btn-delete');
+   var addButton = document.querySelector('#yourpend');
+   var deleteButton = document.querySelector('#theirpend');
    var adhdbutton = document.querySelector('#addbook');
    var seeboook = document.querySelector('#seebook');
    var clickNbr = document.querySelector('#click-nbr');
@@ -43,6 +43,14 @@
             htmls = htmls.concat("</div>");
           }
         $("#newpoll").html(htmls);
+        ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/tradesi', function(data2) {
+           var daata2 = JSON.parse(data2);
+           $("#yourpend").html('Your Trades: ' + daata2.length);
+           ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/tradesm', function(data3) {
+              var daata3 = JSON.parse(data3);
+               $("#theirpend").html('Trades for You: ' + daata3.length);
+           });
+        });
       });
    }
    
@@ -82,29 +90,36 @@
       ahuehue();
    }
    
-   function updateNewPoll () {
-      pollsection.innerHTML = '<form id="myForm" method="post" action="newpoll"><p>Poll Title: <input type="text" name="title" id="title" onkeyup=topLel(this.value) /><span id="wowthere"></span></p><br /><div id="input1" style="margin-bottom:4px;" class="clonedInput">Option: <input type="text" name="name1" id="name1" /></div><div><input type="button" id="btnAdd" value="Add Another" /></div><p class="submit"><input type="submit" name="commit" value="Save" id="savebtn"></p></form>';
-      $('#btnAdd').click(function() {
-          var num        = $('.clonedInput').length;    // how many "duplicatable" input fields we currently have
-          var newNum    = new Number(num + 1);        // the numeric ID of the new input field being added
-      
-          // create the new element via clone(), and manipulate it's ID using newNum value
-          var newElem = $('#input' + num).clone().attr('id', 'input' + newNum);
-      
-          // manipulate the name/id values of the input inside the new element
-          newElem.children(':first').attr('id', 'name' + newNum).attr('name', 'name' + newNum);
-      
-          // insert the new element after the last "duplicatable" input field
-          $('#input' + num).after(newElem);
-      });
-   }
+   
    
    addButton.addEventListener('click', function () {
-      updateNewPoll();
+      $('#bookh').html('Your Trades:');
+       ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/tradesi', function(data) {
+         var apidata = JSON.parse(data);
+         var htmls = "";
+         var chunky = chunk(apidata, 6);
+         for (var v = 0; v < chunky.length; v++)
+          {
+            htmls = htmls.concat("<div class=\"row\">");
+            for (var h = 0; h < chunky[v].length; h++)
+              {
+                htmls = htmls.concat("<div class=\"col-md-2 text-left\" id=\"placeholder\"><div class=\"wowthere\">");
+                   var buttont = '<button class=\"btn btn-danger btn-xs\"id=\"testingtime\" onclick="cancelTradeStuff(\'' + chunky[v][h].title + '\')">Cancel</button>';
+                
+                //actual data
+                htmls = htmls.concat("<img src=\"" + chunky[v][h].image +"\" alt=\"" + chunky[v][h].title + "\" style=\"width:128px;height:148px;\" class=\"img-rounded\">" + buttont);
+                //end actual data
+                htmls = htmls.concat("</div></div>");
+              }
+            htmls = htmls.concat("</div>");
+          }
+        $("#newpoll").html(htmls);
+      });
 
    }, false);
    
    seeboook.addEventListener('click', function() {
+      $('#bookh').html('All Books:');
        ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/allbooks', function(data) {
          var apidata = JSON.parse(data);
          var htmls = "";
@@ -115,8 +130,14 @@
             for (var h = 0; h < chunky[v].length; h++)
               {
                 htmls = htmls.concat("<div class=\"col-md-2 text-left\" id=\"placeholder\"><div class=\"wowthere\">");
+                if (chunky[v][h].user == namesection.innerHTML || chunky[v][h].trade != '') {
+                   var buttont = '<button class=\"btn btn-info btn-xs disabled\"id=\"testingtime\">Trade</button>';
+                }
+                else {
+                   var buttont = '<button class=\"btn btn-info btn-xs\"id=\"testingtime\" onclick="tradeStuff(\'' + chunky[v][h].title + '\')">Trade</button>';
+                }
                 //actual data
-                htmls = htmls.concat("<img src=\"" + chunky[v][h].image +"\" alt=\"" + chunky[v][h].title + "\" style=\"width:128px;height:148px;\" class=\"img-rounded\">");
+                htmls = htmls.concat("<img src=\"" + chunky[v][h].image +"\" alt=\"" + chunky[v][h].title + "\" style=\"width:128px;height:148px;\" class=\"img-rounded\">" + buttont);
                 //end actual data
                 htmls = htmls.concat("</div></div>");
               }
@@ -125,6 +146,8 @@
         $("#newpoll").html(htmls);
       });
    }, false);
+   
+   
    
    adhdbutton.addEventListener('click', function() {
       pollsection.innerHTML = '<p>Book Title: <input type="text" name="title" id="title" /><p class="submit"><button id="ayylmao">Save</button></p>';
@@ -144,21 +167,46 @@
    }, false);
    
    deleteButton.addEventListener('click', function () {
-      ajaxRequest('GET', apiUrlPolls, function (data) {
-         var html = "";
-         var jdata = JSON.parse(data);
-         if (jdata.length === 0)
-         {
-            html += "You haven't created any polls yet!";
-         }
-         for (var v = 0; v < jdata.length; v++)
-         {
-            html += '<br /><br /><a class = "menu" href="/poll/' + jdata[v].user + '/' + jdata[v].title + '/view"><b>' + jdata[v].title + '</b></a>' + '<div class="remove-btn"><a href="/poll/' + jdata[v].user + '/' + jdata[v].title + '/delete"><button class="btn btn-remove">Delete</button></div>';
-         }
-         pollsection.innerHTML = html;
+      $('#bookh').html('Trades for You:');
+       ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/tradesm', function(data) {
+         var apidata = JSON.parse(data);
+         var htmls = "";
+         var chunky = chunk(apidata, 6);
+         for (var v = 0; v < chunky.length; v++)
+          {
+            htmls = htmls.concat("<div class=\"row\">");
+            for (var h = 0; h < chunky[v].length; h++)
+              {
+                htmls = htmls.concat("<div class=\"col-md-2 text-left\" id=\"placeholder\"><div class=\"wowthere\">");
+                   var buttont = '<button class=\"btn btn-xs\"id=\"testingtime\" onclick="approveTradeStuff(\'' + chunky[v][h].title + '\')">Approve</button>';
+                
+                //actual data
+                htmls = htmls.concat("<img src=\"" + chunky[v][h].image +"\" alt=\"" + chunky[v][h].title + "\" style=\"width:128px;height:148px;\" class=\"img-rounded\">" + buttont);
+                //end actual data
+                htmls = htmls.concat("</div></div>");
+              }
+            htmls = htmls.concat("</div>");
+          }
+        $("#newpoll").html(htmls);
       });
 
    }, false);
    
    ready(ajaxRequest('GET', apiUrl, updateClickCount));
 })();
+
+function tradeStuff(idnum) {
+      $.post( "https://books-naiyucko.c9users.io/trade", { 'stuff': idnum }, function( data ) {
+                  $('#newpoll').html('Your trade request has been sent');
+               });
+      
+   }
+function approveTradeStuff(value) {
+   $('#newpoll').html('Your approval has been sent');
+}
+
+function cancelTradeStuff(value) {
+   $.post( "https://books-naiyucko.c9users.io/canceltrade", { 'stuff': value }, function( data ) {
+                  $('#newpoll').html('Your trade request has been cancelled');
+               });
+}

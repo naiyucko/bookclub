@@ -169,6 +169,11 @@ img {
 	color: #212121;
 }
 
+#testingtime {
+	position: absolute;
+	left: 120px;
+}
+
 #click-nbr {
 	font-weight: 400;
 }

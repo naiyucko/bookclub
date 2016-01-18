@@ -44,9 +44,76 @@ function clickHandler (db) {
       });
    };
    
+   this.getTradesi = function (req, res) {
+
+      var clickProjection = { '_id': false };
+
+      polls.find({'trade': req.cookies.username}, clickProjection, function (err, result) {
+         if (err) {
+            throw err;
+         }
+
+         if (result) {
+         	result.toArray(function (err, result) {
+         		if (err) {
+            		throw err;
+         		}
+         		res.json(result);
+         	})
+            
+         } else {
+            
+         }
+      });
+   };
+   
+   this.getTradesm = function (req, res) {
+
+      var clickProjection = { '_id': false };
+
+      polls.find({'user': req.cookies.username, 'trade' :{$ne: ''}}, clickProjection, function (err, result) {
+         if (err) {
+            throw err;
+         }
+
+         if (result) {
+         	result.toArray(function (err, result) {
+         		if (err) {
+            		throw err;
+         		}
+         		res.json(result);
+         	})
+            
+         } else {
+            
+         }
+      });
+   };
+   
    this.getBooks = function(req, res, next) {
       var clickProjection = { '_id': false };
       polls.find({'user': req.cookies.username}, clickProjection, function (err, result) {
+         if (err) {
+            throw err;
+         }
+
+         if (result) {
+         	result.toArray(function (err, result) {
+         		if (err) {
+            		throw err;
+         		}
+         		res.json(result);
+         	})
+            
+         } else {
+            
+         }
+      });
+   }
+   
+   this.getAllBooks = function(req, res, next) {
+      var clickProjection = { '_id': false };
+      polls.find({}, {}, function (err, result) {
          if (err) {
             throw err;
          }
@@ -93,6 +160,24 @@ function clickHandler (db) {
       });
    };
    
+   this.tradeBook = function (req, res) {
+      polls.update({'title': req.body.stuff}, {$set: {'trade': req.cookies.username}}, function (err, result) {
+         if (err) {
+            throw err;
+         }
+         res.redirect('/');
+      })
+   }
+   
+   this.cancelTrade = function (req, res) {
+      polls.update({'title': req.body.stuff}, {$set: {'trade': ''}}, function (err, result) {
+         if (err) {
+            throw err;
+         }
+         res.redirect('/');
+      })
+   }
+   
    this.addUser = function (req, res, next) {
    		usernames.insert({ 'username': req.body.login, 'password': req.body.password, 'fullname': '', 'city': '', 'state': '' }, function (err) {
                if (err) {
@@ -105,7 +190,7 @@ function clickHandler (db) {
 	this.createPoll = function (req, res, next) {
 		var rtitle = decodeURI(req.body.title).toString();
 		var rimage = decodeURI(req.body.image).toString();
-		var tempob = {'user' : req.cookies.username, 'title' : req.body.title, 'image': req.body.image};
+		var tempob = {'user' : req.cookies.username, 'title' : req.body.title, 'image': req.body.image, 'trade': ''};
 		polls.insert(tempob, function (err) {
                if (err) {
                   throw err;

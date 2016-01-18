@@ -25,14 +25,26 @@ module.exports = function (app, db) {
         .get(clickHandler.getClicks);
         //.post(clickHandler.addClick)
         
+    app.route('/api/tradesi')
+        .get(clickHandler.getTradesi);
+        
+    app.route('/canceltrade')
+        .post(clickHandler.cancelTrade);
+        
+    app.route('/api/tradesm')
+        .get(clickHandler.getTradesm);
+        
     app.route('/api/profile')
         .get(clickHandler.getClicks);
         
     app.route('/api/books')
         .get(clickHandler.getBooks);
         
-    app.route('api/allbooks')
+    app.route('/api/allbooks')
         .get(clickHandler.getAllBooks);
+        
+    app.route('/trade')
+        .post(clickHandler.tradeBook);
         
     app.route('/login')
     	.get(function (req, res) {

@@ -2,36 +2,43 @@
 
 (function () {
 
-   var profileId = document.querySelector('#profile-id') || null;
-   var profileUsername = document.querySelector('#profile-username') || null;
-   var profileRepos = document.querySelector('#profile-repos') || null;
-   var displayName = document.querySelector('#display-name');
-   var apiUrl = appUrl + '/api/:id';
+   var namet = document.querySelector('#fullname').value || null;
+   var cityt = document.querySelector('#city') || null;
+   var statet = document.querySelector('#state') || null;
+   var apiUrl = 'https://books-naiyucko.c9users.io/api/profile';
+   //document.getElementById("fullname").value = "Johnny Bravo";
+   function ready (fn) {
+      if (typeof fn !== 'function') {
+         return;
+      }
 
+      if (document.readyState === 'complete') {
+         return fn();
+      }
+
+      document.addEventListener('DOMContentLoaded', fn, false);
+   }
+   function ajaxRequest (method, url, callback) {
+      var xmlhttp = new XMLHttpRequest();
+
+      xmlhttp.onreadystatechange = function () {
+         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            callback(xmlhttp.response);
+         }
+      };
+
+      xmlhttp.open(method, url, true);
+      xmlhttp.send();
+   }
    function updateHtmlElement (data, element, userProperty) {
       element.innerHTML = data[userProperty];
    }
+   function updateClickCount (data) {
+      var clicksObject = JSON.parse(data);
+      document.getElementById("fullname").value = clicksObject.fullname;
+      document.getElementById("city").value = clicksObject.city;
+      document.getElementById("state").value = clicksObject.state;
+   }
 
-   ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, function (data) {
-      var userObject = JSON.parse(data);
-
-      if (userObject.displayName !== null) {
-         updateHtmlElement(userObject, displayName, 'displayName');
-      } else {
-         updateHtmlElement(userObject, displayName, 'username');
-      }
-
-      if (profileId !== null) {
-         updateHtmlElement(userObject, profileId, 'id');   
-      }
-
-      if (profileUsername !== null) {
-         updateHtmlElement(userObject, profileUsername, 'username');   
-      }
-
-      if (profileRepos !== null) {
-         updateHtmlElement(userObject, profileRepos, 'publicRepos');   
-      }
-
-   }));
+  ready(ajaxRequest('GET', apiUrl, updateClickCount));
 })();

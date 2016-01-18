@@ -14,11 +14,25 @@ module.exports = function (app, db) {
         .get(clickHandler.isLogged, function (req, res) {
             res.sendFile(process.cwd() + '/public/index.html');
         });
+        
+    app.route('/profile')
+        .get(clickHandler.isLogged, function (req, res) {
+            res.sendFile(process.cwd() + '/public/profile.html');
+        })
+        .post(clickHandler.isLogged, clickHandler.updateProfile);
 
     app.route('/api/clicks')
-        .get(clickHandler.getClicks)
+        .get(clickHandler.getClicks);
         //.post(clickHandler.addClick)
-        .delete(clickHandler.resetClicks);
+        
+    app.route('/api/profile')
+        .get(clickHandler.getClicks);
+        
+    app.route('/api/books')
+        .get(clickHandler.getBooks);
+        
+    app.route('api/allbooks')
+        .get(clickHandler.getAllBooks);
         
     app.route('/login')
     	.get(function (req, res) {

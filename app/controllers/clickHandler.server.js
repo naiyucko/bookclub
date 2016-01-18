@@ -43,6 +43,27 @@ function clickHandler (db) {
          }
       });
    };
+   
+   this.getBooks = function(req, res, next) {
+      var clickProjection = { '_id': false };
+      polls.find({'user': req.cookies.username}, clickProjection, function (err, result) {
+         if (err) {
+            throw err;
+         }
+
+         if (result) {
+         	result.toArray(function (err, result) {
+         		if (err) {
+            		throw err;
+         		}
+         		res.json(result);
+         	})
+            
+         } else {
+            
+         }
+      });
+   }
 
    this.pollVote = function (req, res) {
    	var answer = req.body.poll.toString();
@@ -62,17 +83,18 @@ function clickHandler (db) {
       });
    };
 
-   this.resetClicks = function (req, res) {
-      clicks.update({}, { 'clicks': 0 }, function (err, result) {
+   this.updateProfile = function (req, res) {
+      
+      usernames.update({'username': req.cookies.username}, {$set: {'fullname': req.body.name, 'city': req.body.City, 'state': req.body.State }}, function (err, result) {
          if (err) {
             throw err;
          }
-         res.json(result);
+         res.redirect('/');
       });
    };
    
    this.addUser = function (req, res, next) {
-   		usernames.insert({ 'username': req.body.login, 'password': req.body.password }, function (err) {
+   		usernames.insert({ 'username': req.body.login, 'password': req.body.password, 'fullname': '', 'city': '', 'state': '' }, function (err) {
                if (err) {
                   throw err;
                }
@@ -82,23 +104,13 @@ function clickHandler (db) {
 	
 	this.createPoll = function (req, res, next) {
 		var rtitle = decodeURI(req.body.title).toString();
-		if (rtitle.endsWith('?')) {
-			rtitle = rtitle.substring(0, rtitle.length - 1);
-			console.log(rtitle);
-		}
-		var tempob = {'user' : req.cookies.username, 'title' : rtitle};
-		for (var v = 1; v < Object.keys(req.body).length - 1; v++)
-		{
-			
-			var tempagain = "name" + v.toString();
-			var tempstring = req.body[tempagain];
-			tempob[tempstring] = 0;
-		}
+		var rimage = decodeURI(req.body.image).toString();
+		var tempob = {'user' : req.cookies.username, 'title' : req.body.title, 'image': req.body.image};
 		polls.insert(tempob, function (err) {
                if (err) {
                   throw err;
                }
-               var urlgo = "/poll/" + req.cookies.username.toString() + "/" + rtitle;
+               var urlgo = "/";
                res.redirect(urlgo);
             });
 	}

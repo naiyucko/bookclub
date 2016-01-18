@@ -147,6 +147,23 @@ img {
 	color: #212121;
 }
 
+.col-md-2 {
+  padding-top: 10px;
+  
+  padding-left: 70px;
+}
+
+.btn-all {	/* Styling for delete button */
+	background-color: #04B404;
+	color: #212121;
+}
+
+.wowthere {
+  padding-left: 42px;
+  padding-top: 20px;
+  border-radius: 25px;
+}
+
 .btn-remove {
 	background-color: #DF0101;
 	color: #212121;

@@ -4,8 +4,9 @@
 
 	<head>
 		<title>Bookclub App</title>
-		
 		<link href="/public/css/main.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+		
 	</head>
 
 	<header>
@@ -14,6 +15,7 @@
 	</header>
 
 	<body>
+		
 		<div class="container">
 			<img src="/public/img/books.gif" height="150" width="150"/>
 			<br />
@@ -24,13 +26,19 @@
 			<p>What would you like to do today?<span id="click-nbr"></span></p>
 			<br />
 			<div class="btn-container">
-				<button type="submit" class="btn btn-add">New Poll</button>
-				<button class="btn btn-delete">My Polls</button>
+				<button id="yourpend" type="submit" style="height:50px;width:150px" class="btn btn-add">Your Trades: 0</button>
+				<button id="theirpend" style="height:50px;width:150px" class="btn btn-delete">Trades for You: 0</button>
+				<br /><br />
+				<button id="addbook" style="height:50px;width:150px" class="btn btn-remove">Add Books</button>
+				<button id="seebook" style="height:50px;width:150px" class="btn btn-all">All Books</button>
 			</div>
 		</div>
-		<center><br /><div class="container text-center" id="newpoll">
+		<div class="container-fluid wrapper">
+  <div class="row">
+    <div class="col-md-12 text-center"><br /><h2>Your Books:</h2>
+    <div id="newpoll">
 			
-		</div></center>
+		</div></div></div></div>
 		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 		<script type="text/javascript" src="controllers/clickController.client.js"></script>

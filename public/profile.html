@@ -11,18 +11,22 @@
 	<body>
 		<div class="container">
 			<div class="github-profile">
-				<img src="/public/img/gh-mark-32px.png" alt="github logo" />
-				<p><span>ID: </span><span id="profile-id" class="profile-value"></span></p>
-				<p><span>Username: </span><span id="profile-username" class="profile-value"></span></p>
-				<p><span>Display Name: </span><span id="display-name" class="profile-value"></span></p>
-				<p><span>Repositories: </span><span id="profile-repos" class="profile-value"></span></p>
+				<h2>Update your profile</h2>
+				
+				<form method="post" action="/profile">
+		        <p><input id="fullname" type="text" name="name" value="" placeholder="Full Name"></p>
+		        <p><input id="city" type="test" name="City" value="" placeholder="City"></p>
+		        <p><input id="state" type="test" name="State" value="" placeholder="State"></p>
+		        <p class="submit"><input class="btn btn-add" type="submit" name="commit" value="Submit"></p>
+		     	</form>
+		     	
 				<a class="menu" href="/">Home</a>
 				<p id="menu-divide">|</p>
 				<a class="menu" href="/logout">Logout</a>
 			</div>
 		</div>
 		
-		<script type="text/javascript" src="common/ajax-functions.js"></script>
+		
 		<script type="text/javascript" src="controllers/userController.client.js"></script>
 	</body>
 

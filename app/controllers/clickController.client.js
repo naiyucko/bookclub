@@ -3,6 +3,8 @@
 (function () {
    var addButton = document.querySelector('.btn-add');
    var deleteButton = document.querySelector('.btn-delete');
+   var adhdbutton = document.querySelector('#addbook');
+   var seeboook = document.querySelector('#seebook');
    var clickNbr = document.querySelector('#click-nbr');
    var namesection = document.querySelector('#display-name');
    var pollsection = document.querySelector('#newpoll');
@@ -22,6 +24,45 @@
       document.addEventListener('DOMContentLoaded', fn, false);
    }
    
+   function ahuehue () {
+      ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/books', function(data) {
+         var apidata = JSON.parse(data);
+         var htmls = "";
+         var chunky = chunk(apidata, 6);
+         for (var v = 0; v < chunky.length; v++)
+          {
+            htmls = htmls.concat("<div class=\"row\">");
+            for (var h = 0; h < chunky[v].length; h++)
+              {
+                htmls = htmls.concat("<div class=\"col-md-2 text-left\" id=\"placeholder\"><div class=\"wowthere\">");
+                //actual data
+                htmls = htmls.concat("<img src=\"" + chunky[v][h].image +"\" alt=\"" + chunky[v][h].title + "\" style=\"width:128px;height:148px;\" class=\"img-rounded\">");
+                //end actual data
+                htmls = htmls.concat("</div></div>");
+              }
+            htmls = htmls.concat("</div>");
+          }
+        $("#newpoll").html(htmls);
+      });
+   }
+   
+   function chunk(arr, size) {
+  var total = [];
+  var amount = Math.ceil(arr.length / size);
+  for (var v = 0; v < amount; v++)
+    {
+      var temparr = [];
+      var ind = 0;
+      for (var h = 0 + (size * v); h < (size + (size * v)) && h < arr.length; h++)
+        {
+          temparr[ind] = arr[h];
+          ind++;
+        }
+      total.push(temparr);
+    }
+  return total;
+}
+   
    function ajaxRequest (method, url, callback) {
       var xmlhttp = new XMLHttpRequest();
 
@@ -38,6 +79,7 @@
     function updateClickCount (data) {
       var clicksObject = JSON.parse(data);
       namesection.innerHTML = clicksObject.username;
+      ahuehue();
    }
    
    function updateNewPoll () {
@@ -62,6 +104,45 @@
 
    }, false);
    
+   seeboook.addEventListener('click', function() {
+       ajaxRequest('GET', 'https://books-naiyucko.c9users.io/api/allbooks', function(data) {
+         var apidata = JSON.parse(data);
+         var htmls = "";
+         var chunky = chunk(apidata, 6);
+         for (var v = 0; v < chunky.length; v++)
+          {
+            htmls = htmls.concat("<div class=\"row\">");
+            for (var h = 0; h < chunky[v].length; h++)
+              {
+                htmls = htmls.concat("<div class=\"col-md-2 text-left\" id=\"placeholder\"><div class=\"wowthere\">");
+                //actual data
+                htmls = htmls.concat("<img src=\"" + chunky[v][h].image +"\" alt=\"" + chunky[v][h].title + "\" style=\"width:128px;height:148px;\" class=\"img-rounded\">");
+                //end actual data
+                htmls = htmls.concat("</div></div>");
+              }
+            htmls = htmls.concat("</div>");
+          }
+        $("#newpoll").html(htmls);
+      });
+   }, false);
+   
+   adhdbutton.addEventListener('click', function() {
+      pollsection.innerHTML = '<p>Book Title: <input type="text" name="title" id="title" /><p class="submit"><button id="ayylmao">Save</button></p>';
+      $('#ayylmao').click(function() {
+         ajaxRequest('GET', 'https://www.googleapis.com/books/v1/volumes?q=' + $('#title').val() + '&key=AIzaSyDGro4GBGWx8sbhp87ZJh1ZfO27VmGLTqE', function(data) {
+            var everythingg = JSON.parse(data);
+            if (everythingg.totalItems !== 0) {
+               $.post( "https://books-naiyucko.c9users.io/newpoll", { 'title': everythingg.items[0].volumeInfo.title, 'image': everythingg.items[0].volumeInfo.imageLinks.thumbnail }, function( data ) {
+                 ahuehue();
+               });
+            }
+            else {
+               pollsection.innerHTML = '<span color="red">Invalid Title</span>';
+            }
+         });
+      });
+   }, false);
+   
    deleteButton.addEventListener('click', function () {
       ajaxRequest('GET', apiUrlPolls, function (data) {
          var html = "";
@@ -81,15 +162,3 @@
    
    ready(ajaxRequest('GET', apiUrl, updateClickCount));
 })();
-
-function topLel(textf) {
-   console.log(textf);
-   if (textf.indexOf("'") !== -1) {
-      $('#savebtn').attr('disabled','disabled');
-      $('#wowthere').html("No special characters allowed");
-   }
-   else {
-      $('#savebtn').attr('disabled',false);
-      $('#wowthere').html("");
-   }
-}
